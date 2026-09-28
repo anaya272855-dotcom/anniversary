@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Our first month</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--night:#1b1030;--plum:#2d1b4e;--gold:#f6b73c;--rose:#f08a9b;--paper:#fbf1e3;--ink:#2a1a1f}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(ellipse at top,var(--plum),var(--night) 70%) fixed;color:var(--paper);font-family:Fraunces,Georgia,serif;line-height:1.7;overflow-x:hidden}
+canvas#petals{position:fixed;inset:0;pointer-events:none;z-index:1}
+.hand{font-family:Caveat,"Segoe Script",cursive}
+main{position:relative;z-index:2}
+/* cover */
+#cover{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.book{width:min(340px,86vw);aspect-ratio:3/4;background:linear-gradient(135deg,#7a2d4a,#4a1830);border-radius:6px 18px 18px 6px;box-shadow:-10px 0 0 #341122 inset,0 30px 60px #000a;padding:36px 30px 30px 44px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;border:0;color:var(--paper);text-align:left;font:inherit;transition:transform .5s cubic-bezier(.2,.8,.2,1);animation:float 4s ease-in-out infinite}
+.book:hover,.book:focus-visible{transform:rotateY(-14deg) scale(1.03);outline:2px solid var(--gold);outline-offset:6px}
+.book h1{font-size:2.2rem;line-height:1.15;font-weight:700}
+.book .hand{font-size:1.5rem;color:var(--gold)}
+.ribbon{width:10px;height:70px;background:var(--gold);align-self:flex-end;margin-right:14px;border-radius:0 0 5px 5px}
+@keyframes float{50%{translate:0 -10px}}
+/* pages */
+#story{display:none;max-width:680px;margin:0 auto;padding:12vh 22px 8vh}
+#story.open{display:block}
+.page{background:var(--paper);color:var(--ink);padding:34px 30px;margin:0 0 9vh;border-radius:4px 14px 14px 4px;box-shadow:0 20px 50px #0008;background-image:repeating-linear-gradient(transparent 0 33px,#e8d5c4 33px 34px);opacity:0;transform:translateY(40px) rotate(var(--r,0deg));transition:opacity .9s,transform .9s cubic-bezier(.2,.8,.2,1)}
+.page.in{opacity:1;transform:rotate(var(--r,0deg))}
+.page:nth-child(odd){--r:-.6deg}.page:nth-child(even){--r:.7deg}
+.page h2{font-size:1.7rem;line-height:1.2;margin-bottom:6px;color:#7a2d4a}
+.date{font-family:Caveat,cursive;font-size:1.5rem;color:#b3651d;display:block;margin-bottom:6px}
+.page p{margin:12px 0}
+.page em{color:#7a2d4a}
+.note{font-family:Caveat,cursive;font-size:1.6rem;color:#7a2d4a;margin-top:14px}
+.photo{margin:18px auto 4px;width:88%;aspect-ratio:4/3;border:8px solid #fff;box-shadow:0 8px 20px #0004;background:#f3e3d3 center/cover;display:grid;place-items:center;font-family:Caveat,cursive;font-size:1.3rem;color:#9a7a68;transform:rotate(-1.5deg);text-align:center}
+.photo.has{color:transparent}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+.chips span{padding:4px 16px;border-radius:99px;background:#7a2d4a;color:var(--paper);font-size:.95rem;opacity:0;transform:scale(.6);transition:.5s cubic-bezier(.3,1.6,.5,1)}
+.in .chips span{opacity:1;transform:none}
+.big{font-size:2rem;display:block;text-align:center;margin:16px 0}
+/* loves */
+.loves{list-style:none}
+.loves li{padding:10px 0 10px 34px;position:relative;border-bottom:1px dashed #d8bfa9}
+.loves li::before{content:"🌼";position:absolute;left:0;top:9px;transition:transform .6s}
+.loves li:hover::before{transform:rotate(180deg) scale(1.3)}
+.loves b{display:block;color:#7a2d4a}
+.loves i{font-size:.95rem;color:#5c4550}
+/* proposal */
+.time{font-size:2.6rem;text-align:center;color:#b3651d;line-height:1.1}
+.four{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}
+.four div{border:2px solid #7a2d4a;border-radius:12px;padding:14px;text-align:center;opacity:0;transform:scale(.7) rotate(-6deg);transition:.6s cubic-bezier(.3,1.6,.5,1)}
+.four div .e{font-size:2rem;display:block}
+.four div b{display:block;color:#7a2d4a}
+.four div small{font-size:.82rem;line-height:1.3;display:block;color:#5c4550}
+.in .four div{opacity:1;transform:none}
+.in .four div:nth-child(2){transition-delay:.5s}.in .four div:nth-child(3){transition-delay:1s}.in .four div:nth-child(4){transition-delay:1.5s}
+/* counter */
+#count{text-align:center;padding:10vh 22px 6vh;max-width:680px;margin:0 auto}
+#count h2{font-size:clamp(1.8rem,6vw,2.6rem);line-height:1.2}
+.clock{display:flex;gap:10px;justify-content:center;margin:26px 0;flex-wrap:wrap}
+.clock div{min-width:74px;padding:14px 8px;border-radius:14px;background:#ffffff14;border:1px solid #ffffff2a}
+.clock b{font-size:2rem;display:block;color:var(--gold);font-variant-numeric:tabular-nums}
+.clock small{font-size:.8rem;opacity:.75}
+#status{font-family:Caveat,cursive;font-size:1.7rem;color:var(--rose)}
+#final{text-align:center;padding:4vh 22px 20vh}
+#final button{font:inherit;font-size:1.1rem;padding:14px 30px;border-radius:99px;border:0;background:var(--gold);color:var(--night);font-weight:700;cursor:pointer;transition:transform .25s}
+#final button:hover,#final button:focus-visible{transform:scale(1.08)}
+#msg{margin:28px auto 0;max-width:520px;font-size:1.25rem;min-height:9em;white-space:pre-line}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01s!important}}
+</style>
+</head>
+<body>
+<canvas id="petals" aria-hidden="true"></canvas>
+<main>
+<section id="cover">
+  <button class="book" id="open" aria-label="Open the diary">
+    <div><span class="hand">for Aradhya</span><h1>Our first month</h1></div>
+    <div class="hand">tap to open ✦</div>
+    <div class="ribbon"></div>
+  </button>
+</section>
+
+<section id="story">
+  <article class="page"><span class="date">Before all of this…</span>
+    <h2>You were just someone I had seen around.</h2>
+    <p>Pretty, obviously. And in my head, pretty always came with a certain amount of attitude. So I quietly decided you were out of bothering-range, said nothing, and went about my day.</p>
+    <p class="note">And then came the workshop.</p></article>
+
+  <article class="page"><span class="date">The workshop</span>
+    <h2>A room full of tasks, and somewhere in it, you.</h2>
+    <p>I ended up picking you for a task, and my first read was simple: <em>she seems nice.</em> Then came our first real conversation, and talking to you was easy. No performance, no guessing games. Genuinely sweet, genuinely respectful.</p>
+    <p>I didn't have a crush. Not yet. Just a thought that wouldn't leave: <em>I actually like talking to this person.</em></p></article>
+
+  <article class="page"><span class="date">The first little moments</span>
+    <h2>Nothing that felt like the beginning of anything.</h2>
+    <p>Your first day. You showed up late, half-expecting trouble, and I told you to just mention my name to Vivek sir. It smoothed things over. Looking back, it was the first time we showed up for each other, even in the smallest way.</p></article>
+
+  <article class="page"><span class="date">12–13 August</span>
+    <h2>The day I noticed your absence</h2>
+    <p>One day you just weren't there, and I kept looking around, checking the usual places. I asked Lisinsa, as casually as I could, why the work hadn't been given to your class. She said Aradhya was absent.</p>
+    <p class="note">Wait… why was I actually looking for her?</p></article>
+
+  <article class="page"><span class="date">14 August</span>
+    <h2>Then it rained ☔</h2>
+    <p>I hadn't planned on opening my umbrella at all, but somehow I had it out and was asking you to come under it before I'd even thought about it.</p>
+    <p>You didn't come under it. Not even a little.</p>
+    <span class="big hand">rejected: 1 umbrella, on the spot 😂</span></article>
+
+  <article class="page"><span class="date">15 August</span>
+    <h2>The day everything started feeling different</h2>
+    <p>We kept ending up in the same places without ever planning it. Coincidence? Maybe. But there were a lot of them that day. Then the legendary misunderstanding, a goodbye that was never meant for you and became a whole little story built on nothing. We still laugh about it.</p>
+    <p>And then, the bus. I'm really glad it happened.</p>
+    <div class="photo" data-photo="15 Aug — add your photo">15 August · add a photo</div>
+    <p class="note">15 August became one of those days I knew I'd remember.</p></article>
+
+  <article class="page"><span class="date">Somewhere in between</span>
+    <h2>When I realized I was falling</h2>
+    <p>I hadn't expected to trust someone this deeply. But the way you showed up, kind, loyal, steady, patient with me in ways I didn't ask for, slowly took apart every reason I had for keeping my guard up. It was gradual, the way morning happens: you don't see it start, you just notice it's light out.</p>
+    <div class="chips"><span>kindness</span><span>trust</span><span>comfort</span><span>respect</span><span>love</span></div>
+    <p class="note">And somehow, you became home.</p></article>
+
+  <article class="page"><span class="date">24 &amp; 25 August</span>
+    <h2>Two flowers 🌼🌼</h2>
+    <p>I never really expected a girl to give me flowers. That felt like something that happened in other people's stories. But you did. Then you gave me another.</p>
+    <div class="photo" data-photo="flower">the flowers · add a photo</div>
+    <p class="note">I didn't know a flower could become a memory.</p></article>
+
+  <article class="page"><span class="date">29 August – September</span>
+    <h2>The hard days</h2>
+    <p>Not everything about this month was easy. On 29 August your badge was taken because of constant gossip. On 3 September mine was taken too, I was scolded a lot, stopped by the principal, and got home late. Someone even called your home. Then the school got loud, everyone complaining, everyone watching, and the half-yearly didn't go well either.</p>
+    <p>I kept asking why it was always the two of us.</p>
+    <p>But through all of it, there was one thing that stayed good: you. You gave me a reason to smile again, and you are the reason I keep moving forward every single day.</p>
+    <p class="note">Hard days passed. You stayed.</p></article>
+
+  <article class="page"><span class="date">14 September</span>
+    <h2>The day that mattered most</h2>
+    <p>Days before, someone had told your family we were always together and that you should not be sent on the 14th, the day of the Ganesh puja. There were threats too. It felt like the whole plan was over before it began.</p>
+    <p>You still came. All day, people kept an eye on me, and there was hardly a chance to talk. I kept wondering why I had even come to school. Only during Pushpanjali did we get a little time, a few words.</p>
+    <p>Then, on the bus, we sat together, clicked a few pictures, and stayed side by side for a very long time. My hand on your shoulder, your hand in mine.Thighs grab and thenn pendant ko touch krnaaa all thisss wassss sooo goood but Nothing was said out loud, and it was the calmest part of that whole month.</p>
+    <p>It didn't end quietly. Your mother saw, she was angry, and you had to face the consequences at home. I couldn't do anything about it, and I hated that.</p>
+    <p class="note">But I would still choose that bus ride, with you.</p></article>
+
+  <article class="page"><span class="date">Things I love about you</span>
+    <h2>A small, honest list</h2>
+    <ul class="loves">
+      <li><b>Your kindness</b><i>the way it shows up even when no one's watching</i></li>
+      <li><b>Your loyalty</b><i>steady, without needing to be asked for it</i></li>
+      <li><b>Your smile</b><i>genuinely one of my favorite things to witness</i></li>
+      <li><b>Your way of talking</b><i>easy, warm, never performed</i></li>
+      <li><b>Your little habits</b><i>the small, specific things that are just so you</i></li>
+      <li><b>The way you make me feel</b><i>calm, seen, never like I'm too much</i></li>
+      <li><b>You made trust possible again</b><i>quietly, patiently, one moment at a time</i></li>
+    </ul></article>
+
+  <article class="page"><span class="date">29 August 2026</span>
+    <h2>The day I had been waiting for</h2>
+    <div class="time hand">1:50 PM</div>
+    <div class="four">
+      <div><span class="e">📔</span><b>a diary</b><small>pages I'd been filling for you long before you read a word</small></div>
+      <div><span class="e">💍</span><b>a ring</b><small>small, simple, and entirely certain</small></div>
+      <div><span class="e">🤝</span><b>a hand kiss</b><small>quiet, and it said more than anything I'd written</small></div>
+      <div><span class="e">🫂</span><b>a hug</b><small>a very big moment that felt very quiet and very safe</small></div>
+    </div></article>
+</section>
+
+<section id="count" hidden>
+  <h2>Time since 29 August 2026, 1:50 PM</h2>
+  <div class="clock">
+    <div><b id="d">0</b><small>days</small></div><div><b id="h">0</b><small>hours</small></div>
+    <div><b id="m">0</b><small>minutes</small></div><div><b id="s">0</b><small>seconds</small></div>
+  </div>
+  <p id="status"></p>
+</section>
+
+<section id="final" hidden>
+  <button id="btn">Happy 1 month, Aradhya 💛</button>
+  <div id="msg" class="hand" aria-live="polite"></div>
+</section>
+</main>
+
+<script>
+(function(){
+  // ---- falling petals ----
+  var cv=document.getElementById('petals'),cx=cv.getContext('2d'),W,H,P=[];
+  function size(){W=cv.width=innerWidth;H=cv.height=innerHeight}
+  size();addEventListener('resize',size);
+  var cols=['#f6b73c','#f08a9b','#ffd98a','#ffb3c1'];
+  function petal(top){return{x:Math.random()*W,y:top?-20:Math.random()*H,r:4+Math.random()*7,v:.4+Math.random()*.9,s:Math.random()*Math.PI*2,c:cols[Math.random()*4|0]}}
+  for(var i=0;i<38;i++)P.push(petal(false));
+  var still=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  function draw(){
+    cx.clearRect(0,0,W,H);
+    P.forEach(function(p,i){
+      p.y+=p.v;p.s+=.02;p.x+=Math.sin(p.s)*.6;
+      if(p.y>H+20)P[i]=petal(true);
+      cx.save();cx.translate(p.x,p.y);cx.rotate(p.s);cx.globalAlpha=.65;cx.fillStyle=p.c;
+      cx.beginPath();cx.ellipse(0,0,p.r,p.r*.55,0,0,7);cx.fill();cx.restore();
+    });
+    if(!still)requestAnimationFrame(draw);
+  }
+  draw();
+
+  // ---- open diary ----
+  var story=document.getElementById('story'),cover=document.getElementById('cover');
+  document.getElementById('open').onclick=function(){
+    cover.style.display='none';story.classList.add('open');
+    document.getElementById('count').hidden=false;document.getElementById('final').hidden=false;
+    scrollTo(0,0);watch();
+  };
+  function watch(){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.2});
+    document.querySelectorAll('.page').forEach(function(p){io.observe(p)});
+  }
+
+  // ---- live counter (India time) ----
+  var start=new Date('2026-08-29T13:50:00+05:30');
+  var anniv=new Date('2026-09-29T13:50:00+05:30');
+  function pad(n){return String(n).padStart(2,'0')}
+  function tick(){
+    var now=new Date(),diff=now-start;
+    if(diff<0)diff=0;
+    var t=Math.floor(diff/1000);
+    document.getElementById('d').textContent=Math.floor(t/86400);
+    document.getElementById('h').textContent=pad(Math.floor(t%86400/3600));
+    document.getElementById('m').textContent=pad(Math.floor(t%3600/60));
+    document.getElementById('s').textContent=pad(t%60);
+    var left=anniv-now,st=document.getElementById('status');
+    if(left>0){
+      var hrs=Math.ceil(left/36e5);
+      st.textContent='Our 1 month is in '+(hrs>=24?Math.floor(hrs/24)+' day'+(hrs>=48?'s':'')+' ':'')+(hrs%24?hrs%24+' hours':'')+' ✦';
+    }else st.textContent='Today is our 1 month anniversary 🎉';
+  }
+  tick();setInterval(tick,1000);
+
+  // ---- final message, typed out ----
+  var text="One month down.\nA lot of ordinary days that turned out to matter.\n\nThank you for being kind, loyal, steady, and for making me smile again.\n\nHere's to many more months. 💛";
+  var btn=document.getElementById('btn'),msg=document.getElementById('msg'),busy=false;
+  btn.onclick=function(){
+    if(busy)return;busy=true;msg.textContent='';var i=0;
+    for(var k=0;k<60;k++){var q=petal(true);q.x=W/2+(Math.random()-.5)*200;q.v=1+Math.random()*2;P.push(q)}
+    if(still){msg.textContent=text;busy=false;return}
+    (function type(){msg.textContent=text.slice(0,++i);if(i<text.length)setTimeout(type,45);else{busy=false;P.length=Math.min(P.length,38)}})();
+  };
+
+  // ---- photos: put an image file next to this html and add its name below ----
+  // Example: var photos={'15 Aug — add your photo':'bus.jpg','flower':'flower.jpg'};
+  var photos={};
+  document.querySelectorAll('.photo').forEach(function(el){
+    var f=photos[el.dataset.photo];
+    if(f){el.style.backgroundImage='url("'+f+'")';el.classList.add('has')}
+  });
+})();
+</script>
+</body>
+</html>
