@@ -123,6 +123,7 @@ main{position:relative;z-index:2}
     <h2>Two flowers 🌼🌼</h2>
     <p>I never really expected a girl to give me flowers. That felt like something that happened in other people's stories. But you did. Then you gave me another.</p>
     <div class="photo" data-photo="flower">the flowers · add a photo</div>
+    <div class="photo" data-photo="flower2">the flowers · add a photo</div>
     <p class="note">I didn't know a flower could become a memory.</p></article>
 
   <article class="page"><span class="date">29 August – September</span>
@@ -136,9 +137,10 @@ main{position:relative;z-index:2}
     <h2>The day that mattered most</h2>
     <p>Days before, someone had told your family we were always together and that you should not be sent on the 14th, the day of the Ganesh puja. There were threats too. It felt like the whole plan was over before it began.</p>
     <p>You still came. All day, people kept an eye on me, and there was hardly a chance to talk. I kept wondering why I had even come to school. Only during Pushpanjali did we get a little time, a few words.</p>
-    <p>Then, on the bus, we sat together, clicked a few pictures, and stayed side by side for a very long time. My hand on your shoulder, your hand in mine.Thighs grab and thenn pendant ko touch krnaaa all thisss wassss sooo goood but Nothing was said out loud, and it was the calmest part of that whole month.</p>
+    <p>Then, on the bus, we sat together, clicked a few pictures, and stayed side by side for a very long time. My hand on your shoulder, your hand in mine. Nothing was said out loud, and it was the calmest part of that whole month.</p>
     <p>It didn't end quietly. Your mother saw, she was angry, and you had to face the consequences at home. I couldn't do anything about it, and I hated that.</p>
-    <p class="note">But I would still choose that bus ride, with you.</p></article>
+    <p class="note">But I would still choose that bus ride, with you.</p>
+    <div class="photo" data-photo="14sep">14 September · add a photo</div></article>
 
   <article class="page"><span class="date">Things I love about you</span>
     <h2>A small, honest list</h2>
@@ -244,7 +246,12 @@ main{position:relative;z-index:2}
 
   // ---- photos: put an image file next to this html and add its name below ----
   // Example: var photos={'15 Aug — add your photo':'bus.jpg','flower':'flower.jpg'};
-  var photos={};
+  var photos={
+    '15 Aug — add your photo':'Screenshot 2026-09-29 000804.png',
+    'flower':'Screenshot 2026-09-29 000354.png',
+    'flower2':'Screenshot 2026-09-29 000401.png',
+    '14sep':'Screenshot 2026-09-29 000651.png'
+  };
   document.querySelectorAll('.photo').forEach(function(el){
     var f=photos[el.dataset.photo];
     if(f){el.style.backgroundImage='url("'+f+'")';el.classList.add('has')}
